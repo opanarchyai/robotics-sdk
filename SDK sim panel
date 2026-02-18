@@ -1,0 +1,63 @@
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Play, Pause, RotateCcw, SkipForward, Circle } from 'lucide-react';
+import { SDKLivePreview } from './SDKLivePreview';
+import type { ExecutionMode } from './SDKConsoleLayout';
+
+interface SDKSimulationPanelProps {
+  robotState: any;
+  isRunning: boolean;
+  onRun: () => void;
+  onStop: () => void;
+  onReset: () => void;
+  executionMode: ExecutionMode;
+}
+
+export const SDKSimulationPanel = ({ robotState, isRunning, onRun, onStop, onReset, executionMode }: SDKSimulationPanelProps) => {
+  return (
+    <div className="h-full flex flex-col">
+      {/* Simulation toolbar */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-card/30">
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant={isRunning ? 'destructive' : 'default'}
+            onClick={isRunning ? onStop : onRun}
+            className="h-7 text-[11px] px-3"
+          >
+            {isRunning ? <Pause className="h-3 w-3 mr-1" /> : <Play className="h-3 w-3 mr-1" />}
+            {isRunning ? 'Pause' : 'Start'}
+          </Button>
+          <Button size="sm" variant="outline" onClick={onReset} className="h-7 text-[11px] px-3">
+            <RotateCcw className="h-3 w-3 mr-1" />
+            Reset
+          </Button>
+          <Button size="sm" variant="outline" className="h-7 text-[11px] px-3">
+            <SkipForward className="h-3 w-3 mr-1" />
+            Step
+          </Button>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <Circle className={`h-2 w-2 ${isRunning ? 'fill-emerald-500 text-emerald-500 animate-pulse' : 'fill-muted-foreground text-muted-foreground'}`} />
+            <span className="text-[11px] text-muted-foreground font-mono">
+              {isRunning ? 'RUNNING' : 'IDLE'}
+            </span>
+          </div>
+          <Badge variant="outline" className="text-[10px] h-5 px-2 font-mono border-border">
+            {executionMode === 'simulation' ? 'SIM' : 'HW'}
+          </Badge>
+          <Badge variant="outline" className="text-[10px] h-5 px-2 font-mono border-border">
+            1.0x
+          </Badge>
+        </div>
+      </div>
+
+      {/* 3D Viewport */}
+      <div className="flex-1 relative">
+        <SDKLivePreview robotState={robotState} />
+      </div>
+    </div>
+  );
+};
